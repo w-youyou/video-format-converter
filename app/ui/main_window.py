@@ -60,7 +60,9 @@ MSG_PRIMARY_OPEN = "打开所在文件夹"
 MSG_OPEN_FILE = "打开文件"
 MSG_OVERWRITE = "文件已存在，是否覆盖？"
 MSG_CLOSE_CONFIRM = "正在转换，确定要退出吗？退出将取消当前任务。"
+MSG_NEED_VIDEO = "请上传视频文件。"
 _INVALID_FILENAME_CHARS = '<>:"/\\|?*'
+VIDEO_SUFFIXES = {".mp4", ".mkv", ".mov", ".avi", ".webm", ".flv", ".wmv"}
 
 
 class MainWindow(QMainWindow):
@@ -404,6 +406,11 @@ class MainWindow(QMainWindow):
     def _on_drop_hint(self, message: str) -> None:
         self.status_label.setText(message)
         self._append_log(message)
+        if message == MSG_NEED_VIDEO:
+            QMessageBox.information(self, WINDOW_TITLE, MSG_NEED_VIDEO)
+
+    def _is_video_file(self, path: str) -> bool:
+        return Path(path).suffix.lower() in VIDEO_SUFFIXES
 
     def _on_select_video(self) -> None:
         if self._converting:
@@ -493,6 +500,11 @@ class MainWindow(QMainWindow):
 
     def _on_file_chosen(self, path: str) -> None:
         if self._converting:
+            return
+        if not self._is_video_file(path):
+            self.status_label.setText(MSG_NEED_VIDEO)
+            self._append_log(f"{MSG_NEED_VIDEO}（已忽略：{path}）")
+            QMessageBox.information(self, WINDOW_TITLE, MSG_NEED_VIDEO)
             return
         self._settings.last_input_dir = str(Path(path).parent)
         self._last_output_path = ""

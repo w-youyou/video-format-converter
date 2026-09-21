@@ -56,7 +56,7 @@ EMPTY_VALUE = "—"
 PLACEHOLDER_THUMB = "暂无封面"
 VIDEO_SUFFIXES = {".mp4", ".mkv", ".mov", ".avi", ".webm", ".flv", ".wmv"}
 MSG_MULTI_FILES = "一次只能转换一个文件，已使用第一个视频。"
-MSG_NOT_VIDEO = "请拖入视频文件。"
+MSG_NOT_VIDEO = "请上传视频文件。"
 PLAY_BTN_SIZE = 64
 
 
