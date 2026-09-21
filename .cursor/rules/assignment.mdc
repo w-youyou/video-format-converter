@@ -1,0 +1,15 @@
+﻿---
+description: 交付项目总约束：桌面客户端、ffmpeg CLI、过程文档、给人用
+alwaysApply: true
+---
+
+# 项目总约束
+
+优先只读并执行 `docs/完整需求与执行方案.md`（需求 + 方案 + 分阶段任务自洽）。
+只做该文档第 0.2 节进度表里第一个未 done 的阶段。清单外的功能不做。禁止跳阶段。
+
+- 产品：给人用的 Windows 视频格式转换器
+- UI **必须** PySide6。禁止网页 / Streamlit / Gradio / tkinter / CLI
+- ffmpeg/ffprobe **必须** 命令行；`list[str]`；禁止 `shell=True`；禁止 UI 线程同步跑
+- 禁止主动加 P2。界面中文
+- 阶段验收通过后更新 `PHASE_STATUS.md` 与 `SESSION_SUMMARY.md`

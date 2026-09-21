@@ -1,0 +1,16 @@
+---
+description: 探测/抽帧/转换必须在后台，禁止冻窗口
+globs: app/workers/**/*.py
+alwaysApply: false
+---
+
+# Worker
+
+- 长任务用 `QProcess`（优先）或 `QThread`；禁止在 UI 槽函数里 `subprocess.run` 等 ffmpeg
+- 命令用 `setProgram` + `setArguments(list[str])`，禁止拼成一条 shell 字符串
+- **禁止 MergedChannels**：进度 stdout，错误 stderr；stdout 残行 buffer 按 `\n` 切
+- Windows 启动外部进程时避免弹出黑色控制台窗口
+- 只发信号：`started` / `log_line` / `progress`（0–99） / `finished_ok` / `failed`
+- 取消：terminate → waitForFinished → kill → wait，再删输出；ffmpeg 不 fork
+- `closeEvent` 必须等 probe/thumb/convert 全部结束，禁止 running 时销毁 QThread
+- argv 在 `core` 构造，Worker 不要拼 ffmpeg 参数

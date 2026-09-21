@@ -1,0 +1,19 @@
+---
+description: ffmpeg/ffprobe 命令行封装与测试边界
+globs: app/core/**/*.py
+alwaysApply: false
+---
+
+# ffmpeg 封装
+
+`core` 禁止依赖 PySide6。所有外部命令走统一 runner，记录完整参数、耗时、退出码、stderr。
+
+- `ffprobe` JSON 读信息；缺字段显示未知；**命令不要加 `--`**
+- 缩略图：`duration*0.1` 抽 1 帧，先 seek 再 decode；输出 jpg + 自增序号，避免 QPixmap 串图
+- 进度优先解析 `out_time=`，其次 `out_time_us`；禁止把 `out_time_ms` 一律当毫秒；百分比 clamp 到 99，finished_ok 才 100
+- 取消：terminate → wait → kill → wait，再删文件
+- 切预设只换输出后缀；开转前输出不得等于输入（abspath+normcase）
+- 无音轨时禁止提取 MP3（开转前 W31）
+- 通用 MP4：`libx264` + `aac` + `+faststart`；copy 预设必须 `-sn` 与可选音轨映射
+- 硬件加速若做：独立完整 args（NVENC `-cq` / QSV `-global_quality`），禁止替换编码器名
+- 禁止默认 `-y`；路径原样进 list；日志展示用 `list2cmdline`，执行仍用 list
